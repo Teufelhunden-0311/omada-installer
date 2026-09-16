@@ -50,6 +50,7 @@ apt-get -qq update
 apt-get -qq install gnupg curl &> /dev/null
 
 echo "[+] Importing the MongoDB 8.0 PGP key and creating the APT repository"
+rm -f /usr/share/keyrings/mongodb-server-8.0.gpg
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
 
 MongoOsVer=$OsVer
