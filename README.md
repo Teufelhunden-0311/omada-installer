@@ -23,7 +23,7 @@ Connect via SSH or console, run the following command and enjoy a sip of coffee 
 > You'll need curl installed which can be installed by running `sudo apt install curl`
 
 ```
-curl -sS https://raw.githubusercontent.com/monsn0/omada-installer/main/install-omada-controller.sh | sudo bash
+curl -sS https://raw.githubusercontent.com/Teufelhunden-0311/omada-installer/main/install-omada-controller.sh | sudo bash
 ```
 
 Once finished, complete the inital setup wizard in your web browser via the URL in the final output.

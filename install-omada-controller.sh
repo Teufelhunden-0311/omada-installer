@@ -8,7 +8,7 @@
 
 echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "TP-Link Omada Software Controller - Installer"
-echo "https://github.com/monsn0/omada-installer"
+echo "https://github.com/Teufelhunden-0311/omada-installer"
 echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
 if [ -e "/usr/bin/tpeap" ]; then
@@ -53,8 +53,8 @@ echo "[+] Importing the MongoDB 8.0 PGP key and creating the APT repository"
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
 
 MongoOsVer=$OsVer
-if ! curl -fsSL -o /dev/null "https://repo.mongodb.org/apt/ubuntu/dists/$OsVer/mongodb-org/8.0/Release"; then
-    echo "[~] No native MongoDB 8.0 repository for $OsVer yet, falling back to jammy"
+if ! curl -fsSL "https://repo.mongodb.org/apt/ubuntu/dists/$OsVer/mongodb-org/8.0/multiverse/binary-amd64/Packages" | grep -q "^Package: mongodb-org$"; then
+    echo "[~] MongoDB 8.0 repository for $OsVer doesn't have the mongodb-org package yet, falling back to jammy"
     MongoOsVer=jammy
 fi
 echo "[~] Using MongoDB repository: $MongoOsVer"
