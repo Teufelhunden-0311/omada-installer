@@ -1,7 +1,7 @@
 #!/bin/bash
 #title           :install-omada-controller.sh
 #description     :Installer for TP-Link Omada Software Controller
-#supported       :Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04
+#supported       :Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04, Ubuntu 26.04
 #author          :monsn0
 #date            :2021-07-29
 #updated         :2025-03-31
@@ -38,8 +38,10 @@ elif [[ $OS = *"Ubuntu 22.04"* ]]; then
     OsVer=jammy
 elif [[ $OS = *"Ubuntu 24.04"* ]]; then
     OsVer=noble
+elif [[ $OS = *"Ubuntu 26.04"* ]]; then
+    OsVer=resolute
 else
-    echo -e "\e[1;31m[!] Script currently only supports Ubuntu 20.04, 22.04 or 24.04! \e[0m"
+    echo -e "\e[1;31m[!] Script currently only supports Ubuntu 20.04, 22.04, 24.04 or 26.04! \e[0m"
     exit
 fi
 
@@ -49,11 +51,22 @@ apt-get -qq install gnupg curl &> /dev/null
 
 echo "[+] Importing the MongoDB 8.0 PGP key and creating the APT repository"
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu $OsVer/mongodb-org/8.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+MongoOsVer=$OsVer
+if ! curl -fsSL -o /dev/null "https://repo.mongodb.org/apt/ubuntu/dists/$OsVer/mongodb-org/8.0/Release"; then
+    echo "[~] No native MongoDB 8.0 repository for $OsVer yet, falling back to jammy"
+    MongoOsVer=jammy
+fi
+echo "[~] Using MongoDB repository: $MongoOsVer"
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu $MongoOsVer/mongodb-org/8.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-8.0.list
 apt-get -qq update
 
 echo "[+] Downloading the latest Omada Software Controller package"
 OmadaPackageUrl=$(curl -fsSL https://support.omadanetworks.com/us/product/omada-software-controller/?resourceType=download | grep -oPi '<a[^>]*href="\K[^"]*linux_x64_[0-9]*\.deb[^"]*' | head -n 1)
+if [ -z "$OmadaPackageUrl" ]; then
+    echo -e "\e[1;31m[!] Could not find the Omada package download URL. TP-Link may have changed their download page. \e[0m"
+    exit 1
+fi
 OmadaPackageBasename=$(basename $OmadaPackageUrl)
 curl -sLo /tmp/$OmadaPackageBasename $OmadaPackageUrl
 
