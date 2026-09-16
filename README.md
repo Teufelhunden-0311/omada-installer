@@ -28,6 +28,15 @@ curl -sS https://raw.githubusercontent.com/Teufelhunden-0311/omada-installer/mai
 
 Once finished, complete the inital setup wizard in your web browser via the URL in the final output.
 
+### Uninstall
+To remove the controller, MongoDB, and their associated repos/config/data, run the script with `--uninstall`:
+
+```
+curl -sS https://raw.githubusercontent.com/Teufelhunden-0311/omada-installer/main/install-omada-controller.sh | sudo bash -s -- --uninstall
+```
+
+This leaves OpenJDK and jsvc installed in case other software on the box depends on them; remove those manually if you don't need them.
+
 ### Ansible playbook
 As an alternative to using the script, you can run the Ansible playbook instead
 > You'll need to have Ansible configured in advance

@@ -11,6 +11,39 @@ echo "TP-Link Omada Software Controller - Installer"
 echo "https://github.com/Teufelhunden-0311/omada-installer"
 echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
+if [ "$1" = "--uninstall" ]; then
+  echo "[+] Verifying running as root"
+  if [ `id -u` -ne 0 ]; then
+    echo -e "\e[1;31m[!] Script requires to be ran as root. Please rerun using sudo. \e[0m"
+    exit
+  fi
+
+  echo "[+] Stopping and purging the Omada Software Controller"
+  systemctl stop tpeap &> /dev/null
+  dpkg --purge omadac &> /dev/null
+  rm -rf /opt/tplink
+  deluser omada &> /dev/null
+  delgroup omada &> /dev/null
+
+  echo "[+] Stopping and purging MongoDB"
+  systemctl stop mongod &> /dev/null
+  apt-get -qq purge -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools mongodb-mongosh &> /dev/null
+  rm -rf /var/lib/mongodb /var/log/mongodb /etc/mongod.conf
+
+  echo "[+] Removing the MongoDB APT repository and PGP key"
+  rm -f /etc/apt/sources.list.d/mongodb-org-8.0.list
+  rm -f /usr/share/keyrings/mongodb-server-8.0.gpg
+
+  echo "[+] Removing the downloaded Omada package and refreshing APT"
+  rm -f /tmp/Omada_SDN_Controller_*_linux_x64_*.deb
+  apt-get -qq update
+  apt-get -qq autoremove -y &> /dev/null
+
+  echo -e "\e[0;32m[~] Omada Software Controller and MongoDB have been removed.\e[0m"
+  echo -e "\e[0;32m[~] OpenJDK and jsvc were left installed in case other software depends on them; remove manually if unneeded.\e[0m\n"
+  exit
+fi
+
 if [ -e "/usr/bin/tpeap" ]; then
   echo -e "\e[1;31m[!] It appears the controller is already installed. Script only supports new installs. \e[0m\n"
   exit
