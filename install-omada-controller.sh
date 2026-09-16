@@ -19,14 +19,16 @@ if [ "$1" = "--uninstall" ]; then
   fi
 
   echo "[+] Stopping and purging the Omada Software Controller"
-  systemctl stop tpeap &> /dev/null
+  if [ -e "/usr/bin/tpeap" ]; then
+    timeout 30 /usr/bin/tpeap stop &> /dev/null
+  fi
   dpkg --purge omadac &> /dev/null
   rm -rf /opt/tplink
   deluser omada &> /dev/null
   delgroup omada &> /dev/null
 
   echo "[+] Stopping and purging MongoDB"
-  systemctl stop mongod &> /dev/null
+  timeout 30 systemctl stop mongod &> /dev/null
   apt-get -qq purge -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools mongodb-mongosh &> /dev/null
   rm -rf /var/lib/mongodb /var/log/mongodb /etc/mongod.conf
 
