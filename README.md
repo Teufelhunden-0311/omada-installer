@@ -28,6 +28,17 @@ curl -sS https://raw.githubusercontent.com/Teufelhunden-0311/omada-installer/mai
 
 Once finished, complete the inital setup wizard in your web browser via the URL in the final output.
 
+### A note on Ubuntu 26.04 and MongoDB
+As of this writing, MongoDB's apt repo doesn't yet publish a full `mongodb-org` package set for Ubuntu 26.04 (`resolute`). The script detects this and falls back to installing from the `jammy` (22.04) repo instead, which is the same trick that's long been used to run MongoDB on Ubuntu releases newer than its official repo support.
+
+This fallback only happens once, at install time. Your `/etc/apt/sources.list.d/mongodb-org-8.0.list` will stay pinned to `jammy` from then on, and `apt upgrade` will keep pulling MongoDB updates from there indefinitely — it will not automatically switch over once MongoDB does publish native `resolute` packages. A fresh install run after that point will pick up the native repo on its own, but an already-installed system won't. To move an existing install over manually once it's available:
+
+```
+sudo sed -i 's/jammy\/mongodb-org/resolute\/mongodb-org/' /etc/apt/sources.list.d/mongodb-org-8.0.list
+sudo apt-get update
+sudo apt-get install --only-upgrade mongodb-org
+```
+
 ### Uninstall
 To remove the controller, MongoDB, and their associated repos/config/data, run the script with `--uninstall`:
 
