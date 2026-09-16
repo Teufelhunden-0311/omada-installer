@@ -8,7 +8,7 @@
 
 echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "TP-Link Omada Software Controller - Installer"
-echo "https://github.com/monsn0/omada-installer"
+echo "https://github.com/Teufelhunden-0311/omada-installer"
 echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
 if [ -e "/usr/bin/tpeap" ]; then

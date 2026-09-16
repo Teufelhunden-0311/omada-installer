@@ -1,6 +1,6 @@
 ---
 # TP-Link Omada Software Controller - Installer
-# https://github.com/monsn0/omada-installer
+# https://github.com/Teufelhunden-0311/omada-installer
 
 - name: Omada Installer
   hosts: all
