@@ -6,6 +6,8 @@
 #date            :2021-07-29
 #updated         :2025-03-31
 
+export DEBIAN_FRONTEND=noninteractive
+
 echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "TP-Link Omada Software Controller - Installer"
 echo "https://github.com/Teufelhunden-0311/omada-installer"
@@ -22,7 +24,7 @@ if [ "$1" = "--uninstall" ]; then
   if [ -e "/usr/bin/tpeap" ]; then
     timeout 30 /usr/bin/tpeap stop &> /dev/null
   fi
-  dpkg --purge omadac &> /dev/null
+  timeout 60 dpkg --purge omadac &> /dev/null
   rm -rf /opt/tplink
   deluser omada &> /dev/null
   delgroup omada &> /dev/null
