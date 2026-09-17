@@ -20,18 +20,23 @@ if [ "$1" = "--uninstall" ]; then
     exit
   fi
 
-  echo "[+] Stopping and purging the Omada Software Controller"
+  echo "[+] Stopping the Omada Software Controller service"
   if [ -e "/usr/bin/tpeap" ]; then
-    timeout 30 /usr/bin/tpeap stop &> /dev/null
+    timeout -k 5 30 /usr/bin/tpeap stop
   fi
-  timeout 60 dpkg --purge omadac &> /dev/null
+  echo "[+] Purging the omadac package"
+  timeout -k 5 60 dpkg --purge omadac
+  echo "[+] Removing /opt/tplink"
   rm -rf /opt/tplink
-  deluser omada &> /dev/null
-  delgroup omada &> /dev/null
+  echo "[+] Removing the omada system user/group"
+  deluser omada
+  delgroup omada
 
-  echo "[+] Stopping and purging MongoDB"
-  timeout 30 systemctl stop mongod &> /dev/null
-  apt-get -qq purge -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools mongodb-mongosh &> /dev/null
+  echo "[+] Stopping the MongoDB service"
+  timeout -k 5 30 systemctl stop mongod
+  echo "[+] Purging MongoDB packages"
+  timeout -k 5 60 apt-get purge -y mongodb-org mongodb-org-database mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools mongodb-mongosh
+  echo "[+] Removing MongoDB data and config"
   rm -rf /var/lib/mongodb /var/log/mongodb /etc/mongod.conf
 
   echo "[+] Removing the MongoDB APT repository and PGP key"
@@ -41,7 +46,8 @@ if [ "$1" = "--uninstall" ]; then
   echo "[+] Removing the downloaded Omada package and refreshing APT"
   rm -f /tmp/Omada_SDN_Controller_*_linux_x64_*.deb
   apt-get -qq update
-  apt-get -qq autoremove -y &> /dev/null
+  echo "[+] Running apt autoremove"
+  timeout -k 5 60 apt-get autoremove -y
 
   echo -e "\e[0;32m[~] Omada Software Controller and MongoDB have been removed.\e[0m"
   echo -e "\e[0;32m[~] OpenJDK and jsvc were left installed in case other software depends on them; remove manually if unneeded.\e[0m\n"
