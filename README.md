@@ -3,7 +3,9 @@ A script to perform a new install of the TP-Link Omada Software Controller on Ub
 
 This script was created due to convoluted or outdated guides on the web for installing the Omada Controller. The goal was to create a clean, simple script that anyone can run for ease of deployment.
 
-Special thanks to @willquill for his Omada Ubuntu 16.04 guide :)
+Special thanks to @willquill for his Omada Ubuntu 16.04 guide, and to @monsn0 for the original script this is forked from :)
+
+This fork's Ubuntu 26.04 support was implemented with [Claude Code](https://claude.com/claude-code) (Sonnet 5).
 
 ### Supported releases
 - Ubuntu 26.04 LTS
